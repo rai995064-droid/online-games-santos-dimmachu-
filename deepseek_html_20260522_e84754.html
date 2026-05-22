@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Arcade Nexus · Online Games Hub</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Font: Poppins + Inter for modern look -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #0b0e1a 0%, #11172b 100%);
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+      color: #edeef7;
+    }
+
+    /* main container */
+    .hub-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      background: rgba(12, 18, 34, 0.65);
+      backdrop-filter: blur(3px);
+      border-radius: 3rem;
+      padding: 1.8rem 2rem 2.5rem;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+      border: 1px solid rgba(72, 187, 255, 0.2);
+    }
+
+    /* header section */
+    .game-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .game-header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.8rem;
+      background: linear-gradient(135deg, #E0F2FE, #A5F3FC, #7DD3FC);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .game-header h1 i {
+      background: none;
+      color: #38bdf8;
+      font-size: 2.2rem;
+      background-clip: unset;
+      -webkit-background-clip: unset;
+    }
+    .sub {
+      color: #9ca3cf;
+      margin-top: 0.5rem;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+    }
+
+    /* tab navigation */
+    .game-nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+      padding-bottom: 0.8rem;
+    }
+    .tab-btn {
+      background: rgba(20, 28, 48, 0.8);
+      border: none;
+      padding: 0.8rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 60px;
+      color: #cbd5ff;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(4px);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Poppins', sans-serif;
+      border: 1px solid rgba(71, 146, 232, 0.2);
+    }
+    .tab-btn i {
+      font-size: 1.2rem;
+    }
+    .tab-btn.active {
+      background: linear-gradient(105deg, #1e2a5e, #0f2c49);
+      color: white;
+      border-color: #3b82f6;
+      box-shadow: 0 6px 14px rgba(59,130,246,0.3);
+      text-shadow: 0 0 2px rgba(0,0,0,0.2);
+    }
+    .tab-btn:hover:not(.active) {
+      background: #1f2a4e;
+      border-color: #3b82f680;
+      transform: translateY(-2px);
+    }
+
+    /* game panels */
+    .game-panel {
+      display: none;
+      animation: fadeSlideIn 0.35s ease-out;
+    }
+    .game-panel.active-panel {
+      display: block;
+    }
+    @keyframes fadeSlideIn {
+      0% { opacity: 0; transform: translateY(8px);}
+      100% { opacity: 1; transform: translateY(0);}
+    }
+
+    /* universal card style for games */
+    .game-card {
+      background: rgba(18, 25, 45, 0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 2rem;
+      padding: 1.8rem;
+      border: 1px solid rgba(59,130,246,0.4);
+      transition: all 0.2s;
+    }
+
+    /* Rock Paper Scissors */
+    .rps-choices {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+    .choice-btn {
+      background: #16213b;
+      border: none;
+      width: 110px;
+      padding: 1rem 0;
+      border-radius: 60px;
+      font-size: 2.2rem;
+      color: #f0f3ff;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 5px 0 #0a0e1c;
+      border: 1px solid #2d4a8b;
+    }
+    .choice-btn:hover {
+      transform: translateY(-4px);
+      background: #1e2f55;
+      box-shadow: 0 9px 0 #0a0e1c;
+    }
+    .score-board {
+      display: flex;
+      justify-content: space-around;
+      background: #0f1424aa;
+      border-radius: 80px;
+      padding: 1rem;
+      margin: 1rem 0 1.5rem;
+      text-align: center;
+      font-weight: bold;
+    }
+    .score-box p {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    .result-text {
+      text-align: center;
+      font-size: 1.3rem;
+      background: #0f172fa0;
+      border-radius: 40px;
+      padding: 0.7rem;
+      margin: 1rem 0;
+    }
+    .reset-btn {
+      background: #2d374b;
+      border: none;
+      padding: 0.6rem 1.8rem;
+      border-radius: 40px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .reset-btn:hover {
+      background: #475569;
+      transform: scale(0.97);
+    }
+    /* Memory game grid */
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      max-width: 550px;
+      margin: 1.5rem auto;
+      justify-items: center;
+    }
+    .card-memory {
+      background: linear-gradient(145deg, #1e2a47, #0f172f);
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 8px 12px rgba(0,0,0,0.3);
+      border: 1px solid #2b4275;
+      transform: scale(1);
+    }
+    .card-memory.flipped, .card-memory.matched {
+      background: radial-gradient(circle at 30% 20%, #2b4c7c, #0f2c4a);
+      border-color: #60a5fa;
+      transform: scale(0.98);
+    }
+    .card-memory.matched {
+      background: #1f3a5f;
+      cursor: default;
+      filter: drop-shadow(0 0 6px #2dd4bf);
+      border-color: #2dd4bf;
+    }
+    .memory-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #10172e;
+      padding: 0.8rem 1.5rem;
+      border-radius: 80px;
+      margin: 1rem 0;
+    }
+    /* number guesser */
+    .guess-area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin: 1.8rem 0;
+    }
+    .guess-input {
+      padding: 12px 20px;
+      border-radius: 60px;
+      border: none;
+      background: #1e293b;
+      color: white;
+      font-size: 1rem;
+      width: 180px;
+      text-align: center;
+      outline: none;
+      border: 1px solid #3b82f6;
+    }
+    .guess-btn {
+      background: #2563eb;
+      border: none;
+      padding: 0 24px;
+      border-radius: 60px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .message-area {
+      background: #0a0f1c;
+      border-radius: 2rem;
+      padding: 1rem;
+      margin: 1rem 0;
+      text-align: center;
+    }
+    .attempt-badge {
+      font-size: 1rem;
+      font-weight: bold;
+      background: #0077b6;
+      display: inline-block;
+      padding: 4px 18px;
+      border-radius: 40px;
+    }
+    footer {
+      text-align: center;
+      margin-top: 2.5rem;
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+    @media (max-width: 600px) {
+      .hub-container {
+        padding: 1rem;
+      }
+      .memory-grid {
+        gap: 8px;
+      }
+      .choice-btn {
+        width: 80px;
+        font-size: 1.8rem;
+      }
+      .tab-btn {
+        padding: 0.5rem 1.2rem;
+        font-size: 0.85rem;
+      }
+    }
+    button {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body>
+<div class="hub-container">
+  <div class="game-header">
+    <h1><i class="fas fa-gamepad"></i> Arcane Arcade <i class="fas fa-dice-d6"></i></h1>
+    <div class="sub">classic online games · instant play · no downloads</div>
+  </div>
+
+  <!-- game tabs -->
+  <div class="game-nav">
+    <button class="tab-btn active" data-game="rps"><i class="fas fa-hand-fist"></i> Rock Paper Scissors</button>
+    <button class="tab-btn" data-game="guess"><i class="fas fa-brain"></i> Number Guesser</button>
+    <button class="tab-btn" data-game="memory"><i class="fas fa-tablets"></i> Memory Match</button>
+  </div>
+
+  <!-- ROCK PAPER SCISSORS PANEL -->
+  <div id="rpsPanel" class="game-panel active-panel">
+    <div class="game-card">
+      <h2 style="text-align: center; margin-bottom: 10px;"><i class="fas fa-hand-peace"></i> vs Computer</h2>
+      <div class="rps-choices">
+        <button class="choice-btn" data-move="rock">✊<br><span style="font-size: 0.8rem;">Rock</span></button>
+        <button class="choice-btn" data-move="paper">✋<br><span style="font-size: 0.8rem;">Paper</span></button>
+        <button class="choice-btn" data-move="scissors">✌️<br><span style="font-size: 0.8rem;">Scissors</span></button>
+      </div>
+      <div class="score-board">
+        <div class="score-box"><i class="fas fa-user-astronaut"></i> You <p id="playerScore">0</p></div>
+        <div class="score-box"><i class="fas fa-robot"></i> AI <p id="computerScore">0</p></div>
+      </div>
+      <div class="result-text" id="rpsResult">✨ click a move to start ✨</div>
+      <div style="display: flex; justify-content: center;">
+        <button id="resetRPS" class="reset-btn"><i class="fas fa-arrows-rotate"></i> Reset Scores</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NUMBER GUESSER PANEL -->
+  <div id="guessPanel" class="game-panel">
+    <div class="game-card">
+      <h2 style="text-align: center;"><i class="fas fa-chart-line"></i> Guess the Number (1–100)</h2>
+      <div class="guess-area">
+        <input type="number" id="guessInput" class="guess-input" placeholder="Enter guess" min="1" max="100">
+        <button id="submitGuess" class="guess-btn"><i class="fas fa-check"></i> Guess</button>
+        <button id="resetGuessGame" class="reset-btn"><i class="fas fa-sync-alt"></i> New Game</button>
+      </div>
+      <div class="message-area" id="guessMessage">💡 I'm thinking of a number between 1 and 100. Make a guess!</div>
+      <div style="text-align: center;"><span class="attempt-badge" id="attemptCount">Attempts: 0</span></div>
+    </div>
+  </div>
+
+  <!-- MEMORY MATCH PANEL -->
+  <div id="memoryPanel" class="game-panel">
+    <div class="game-card">
+      <h2 style="text-align: center;"><i class="fas fa-brain"></i> Emoji Memory • match all pairs</h2>
+      <div class="memory-stats">
+        <span><i class="fas fa-shoe-prints"></i> Moves: <strong id="movesCount">0</strong></span>
+        <span><i class="fas fa-star"></i> Matched: <strong id="matchedPairsDisplay">0</strong> / 8</span>
+        <button id="resetMemoryBtn" class="reset-btn" style="background:#2c3e66;"><i class="fas fa-shuffle"></i> New Game</button>
+      </div>
+      <div id="memoryBoard" class="memory-grid"></div>
+      <div id="memoryStatus" style="text-align: center; margin-top: 12px; font-style: italic;"></div>
+    </div>
+  </div>
+  <footer>
+    <i class="fas fa-crown"></i> classic arcade hub — all games run locally, no tracking
+  </footer>
+</div>
+
+<script>
+  (function() {
+    // ---------- TAB SWITCHING ----------
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panels = {
+      rps: document.getElementById('rpsPanel'),
+      guess: document.getElementById('guessPanel'),
+      memory: document.getElementById('memoryPanel')
+    };
+
+    function switchGame(gameId) {
+      Object.keys(panels).forEach(id => {
+        panels[id].classList.remove('active-panel');
+      });
+      panels[gameId].classList.add('active-panel');
+      tabs.forEach(btn => {
+        btn.classList.remove('active');
+        if(btn.getAttribute('data-game') === gameId) btn.classList.add('active');
+      });
+    }
+
+    tabs.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const game = btn.getAttribute('data-game');
+        switchGame(game);
+      });
+    });
+
+    // ========== 1) ROCK PAPER SCISSORS ==========
+    let playerScore = 0, computerScore = 0;
+    const playerScoreSpan = document.getElementById('playerScore');
+    const computerScoreSpan = document.getElementById('computerScore');
+    const rpsResultDiv = document.getElementById('rpsResult');
+    const resetRPSBtn = document.getElementById('resetRPS');
+
+    function getComputerMove() {
+      const moves = ['rock', 'paper', 'scissors'];
+      const rand = Math.floor(Math.random() * 3);
+      return moves[rand];
+    }
+
+    function determineWinner(player, computer) {
+      if (player === computer) return 'draw';
+      if (
+        (player === 'rock' && computer === 'scissors') ||
+        (player === 'paper' && computer === 'rock') ||
+        (player === 'scissors' && computer === 'paper')
+      ) {
+        return 'player';
+      }
+      return 'computer';
+    }
+
+    function updateRPSUI(result, playerMove, computerMove) {
+      const emojiMap = { rock: '✊', paper: '✋', scissors: '✌️' };
+      let message = '';
+      if (result === 'draw') {
+        message = `🤝 Draw! Both chose ${emojiMap[playerMove]}`;
+      } else if (result === 'player') {
+        message = `🎉 You win! ${emojiMap[playerMove]} beats ${emojiMap[computerMove]}`;
+      } else {
+        message = `💀 AI wins! ${emojiMap[computerMove]} beats ${emojiMap[playerMove]}`;
+      }
+      rpsResultDiv.innerHTML = message;
+      playerScoreSpan.textContent = playerScore;
+      computerScoreSpan.textContent = computerScore;
+    }
+
+    function handleRPSMove(playerMove) {
+      const computerMove = getComputerMove();
+      const winner = determineWinner(playerMove, computerMove);
+      if (winner === 'player') playerScore++;
+      else if (winner === 'computer') computerScore++;
+      updateRPSUI(winner, playerMove, computerMove);
+    }
+
+    function resetRPSScores() {
+      playerScore = 0;
+      computerScore = 0;
+      playerScoreSpan.textContent = "0";
+      computerScoreSpan.textContent = "0";
+      rpsResultDiv.innerHTML = "✨ Scores reset! Make a move ✨";
+    }
+
+    document.querySelectorAll('.choice-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const move = btn.getAttribute('data-move');
+        if(move) handleRPSMove(move);
+      });
+    });
+    resetRPSBtn.addEventListener('click', resetRPSScores);
+
+    // ========== 2) NUMBER GUESSING GAME ==========
+    let secretNumber = Math.floor(Math.random() * 100) + 1;
+    let attempts = 0;
+    const guessInput = document.getElementById('guessInput');
+    const submitGuessBtn = document.getElementById('submitGuess');
+    const resetGuessGameBtn = document.getElementById('resetGuessGame');
+    const guessMessageDiv = document.getElementById('guessMessage');
+    const attemptSpan = document.getElementById('attemptCount');
+
+    function updateGuessUI(message, isError = false) {
+      guessMessageDiv.innerHTML = message;
+      if (isError) guessMessageDiv.style.color = "#facc15";
+      else guessMessageDiv.style.color = "#cbd5ff";
+      setTimeout(() => { if(!isError) guessMessageDiv.style.color = "#cbd5ff"; }, 1200);
+    }
+
+    function resetNumberGame() {
+      secretNumber = Math.floor(Math.random() * 100) + 1;
+      attempts = 0;
+      attemptSpan.textContent = `Attempts: 0`;
+      guessInput.value = '';
+      updateGuessUI(`🔄 New number! Guess between 1-100. (hint: ${secretNumber})`, false);
+      setTimeout(() => updateGuessUI(`✨ New round! I picked a new secret number. Good luck ✨`, false), 1200);
+    }
+
+    function checkGuess() {
+      let rawValue = guessInput.value.trim();
+      if (rawValue === "") {
+        updateGuessUI("❌ Please enter a number!", true);
+        return;
+      }
+      const guess = Number(rawValue);
+      if (isNaN(guess) || guess < 1 || guess > 100) {
+        updateGuessUI("⚠️ Guess must be a number between 1 and 100.", true);
+        return;
+      }
+      attempts++;
+      attemptSpan.textContent = `Attempts: ${attempts}`;
+      if (guess === secretNumber) {
+        updateGuessUI(`🎉 CORRECT! The number was ${secretNumber}. You nailed it in ${attempts} attempts! 🎉`);
+        setTimeout(() => resetNumberGame(), 2800);
+      } else if (guess < secretNumber) {
+        updateGuessUI(`📈 Too low! ${guess} is below the secret number. Try again.`);
+      } else {
+        updateGuessUI(`📉 Too high! ${guess} is above the secret number. Try again.`);
+      }
+      guessInput.value = '';
+      guessInput.focus();
+    }
+
+    submitGuessBtn.addEventListener('click', checkGuess);
+    resetGuessGameBtn.addEventListener('click', () => {
+      secretNumber = Math.floor(Math.random() * 100) + 1;
+      attempts = 0;
+      attemptSpan.textContent = `Attempts: 0`;
+      guessInput.value = '';
+      updateGuessUI(`✨ Game reset! New secret number (1-100). First guess? ✨`);
+    });
+    guessInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') checkGuess(); });
+
+    // ========== 3) MEMORY MATCH GAME ==========
+    const memoryBoard = document.getElementById('memoryBoard');
+    const movesSpan = document.getElementById('movesCount');
+    const matchedPairsSpan = document.getElementById('matchedPairsDisplay');
+    const resetMemoryBtn = document.getElementById('resetMemoryBtn');
+    const memoryStatusDiv = document.getElementById('memoryStatus');
+
+    let cardsArray = [];
+    let firstCard = null, secondCard = null;
+    let lockBoard = false;
+    let moves = 0;
+    let matchedPairs = 0;
+    let gameActive = true;
+    let timeoutId = null;
+
+    // 8 pairs of cute emojis
+    const PAIRS_EMOJI = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'];
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function initMemoryCards() {
+      let deck = [];
+      for (let i = 0; i < PAIRS_EMOJI.length; i++) {
+        deck.push({ id: i, emoji: PAIRS_EMOJI[i], matched: false, flipped: false, element: null });
+        deck.push({ id: i, emoji: PAIRS_EMOJI[i], matched: false, flipped: false, element: null });
+      }
+      return shuffleArray(deck);
+    }
+
+    function updateMemoryStats() {
+      movesSpan.textContent = moves;
+      matchedPairsSpan.textContent = `${matchedPairs} / 8`;
+      if (matchedPairs === 8 && gameActive) {
+        gameActive = false;
+        memoryStatusDiv.innerHTML = "🏆 PERFECT MEMORY! 🏆 You've matched all pairs! Press 'New Game' to play again.";
+        memoryStatusDiv.style.color = "#facc15";
+        lockBoard = true; // prevent extra clicks
+      } else {
+        if (gameActive) memoryStatusDiv.innerHTML = "✨ match pairs to win!";
+        else memoryStatusDiv.innerHTML = "🎮 Game finished, click New Game";
+      }
+    }
+
+    function resetMemoryGame() {
+      // clear pending timeout to avoid state corruption
+      if (timeoutId) clearTimeout(timeoutId);
+      // reset global flags
+      firstCard = null;
+      secondCard = null;
+      lockBoard = false;
+      moves = 0;
+      matchedPairs = 0;
+      gameActive = true;
+      memoryStatusDiv.innerHTML = "🎴 Shuffled! Match the emojis.";
+      memoryStatusDiv.style.color = "#cbd5ff";
+      // reinitialize deck
+      cardsArray = initMemoryCards();
+      renderMemoryBoard();
+      updateMemoryStats();
+    }
+
+    function renderMemoryBoard() {
+      memoryBoard.innerHTML = '';
+      cardsArray.forEach((card, idx) => {
+        const cardDiv = document.createElement('div');
+        cardDiv.classList.add('card-memory');
+        if (card.matched) {
+          cardDiv.classList.add('matched');
+          cardDiv.textContent = card.emoji;
+        } else if (card.flipped) {
+          cardDiv.classList.add('flipped');
+          cardDiv.textContent = card.emoji;
+        } else {
+          cardDiv.textContent = '?';
+        }
+        cardDiv.setAttribute('data-index', idx);
+        cardDiv.addEventListener('click', () => onCardClick(idx));
+        card.element = cardDiv;
+        memoryBoard.appendChild(cardDiv);
+      });
+    }
+
+    function onCardClick(clickedIdx) {
+      const clickedCard = cardsArray[clickedIdx];
+      // rules: game active, not locked, not already matched, not already flipped, not same as first selected
+      if (!gameActive || lockBoard) return;
+      if (clickedCard.matched) return;
+      if (clickedCard.flipped) return;
+      if (firstCard && secondCard) return; // safety
+      if (firstCard && firstCard === clickedCard) return;
+
+      // flip current card
+      clickedCard.flipped = true;
+      renderMemoryBoard();
+
+      if (!firstCard) {
+        firstCard = clickedCard;
+      } else if (!secondCard) {
+        secondCard = clickedCard;
+        moves++;
+        updateMemoryStats();
+        checkMatch();
+      }
+    }
+
+    function checkMatch() {
+      const card1 = firstCard;
+      const card2 = secondCard;
+      if (card1.id === card2.id) {
+        // matched!
+        card1.matched = true;
+        card2.matched = true;
+        card1.flipped = true;
+        card2.flipped = true;
+        matchedPairs++;
+        // reset temporary flipped (they become matched)
+        firstCard = null;
+        secondCard = null;
+        renderMemoryBoard();
+        updateMemoryStats();
+      } else {
+        // no match: lock board, then flip back after delay
+        lockBoard = true;
+        timeoutId = setTimeout(() => {
+          card1.flipped = false;
+          card2.flipped = false;
+          renderMemoryBoard();
+          firstCard = null;
+          secondCard = null;
+          lockBoard = false;
+          timeoutId = null;
+        }, 700);
+      }
+      if (matchedPairs === 8) {
+        gameActive = false;
+        lockBoard = true; // final freeze
+        updateMemoryStats();
+      }
+      // if after match firstCard/secondCard null, no extra action
+    }
+
+    function fullResetMemoryHandler() {
+      if (timeoutId) clearTimeout(timeoutId);
+      firstCard = null;
+      secondCard = null;
+      lockBoard = false;
+      moves = 0;
+      matchedPairs = 0;
+      gameActive = true;
+      cardsArray = initMemoryCards();
+      renderMemoryBoard();
+      updateMemoryStats();
+      memoryStatusDiv.innerHTML = "🃏 New memory match! Flip & find pairs.";
+    }
+
+    resetMemoryBtn.addEventListener('click', fullResetMemoryHandler);
+
+    // INIT memory game on page load
+    cardsArray = initMemoryCards();
+    renderMemoryBoard();
+    moves = 0; matchedPairs = 0; gameActive = true; lockBoard = false; firstCard = null; secondCard = null;
+    updateMemoryStats();
+    memoryStatusDiv.innerHTML = "🔮 Match all 8 emoji pairs. Click cards!";
+
+    // Edge: Reset after double click tab? no needed, but everything is stable.
+    // Also fix accidental memory toggle when switching away and back: board remains consistent
+    // ensure that if panel hidden, board still functional when shown again.
+  })();
+</script>
+</body>
+</html>
